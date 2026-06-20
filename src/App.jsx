@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useContext, createContext } from 'react'
 
-const ThemeCtx = createContext(false) // false = light (default)
+const ThemeCtx = createContext(false)
 
 // ── Intersection Observer hook ─────────────────────────────────────────────
 function useReveal(threshold = 0.12) {
@@ -47,32 +47,6 @@ const Icon = {
       <path d="m9 14 2 2 4-4"/>
     </svg>
   ),
-  Book: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
-    </svg>
-  ),
-  FileText: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/>
-      <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/>
-    </svg>
-  ),
-  BarChart: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>
-    </svg>
-  ),
-  Pencil: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
-    </svg>
-  ),
-  Folder: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-    </svg>
-  ),
   Download: () => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -86,11 +60,11 @@ const Icon = {
   ),
   Menu: () => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-      <line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/>
+      <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
     </svg>
   ),
   X: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
       <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
     </svg>
   ),
@@ -115,17 +89,16 @@ const Icon = {
 // ── Phone mockup ───────────────────────────────────────────────────────────
 function PhoneMockup() {
   return (
-    <div className="relative mx-auto select-none">
+    <div className="relative mx-auto select-none w-full" style={{ maxWidth: 300 }}>
       <div className="absolute inset-0 blur-3xl opacity-25 pointer-events-none"
         style={{ background: 'radial-gradient(ellipse, #7C3AED 0%, transparent 70%)', transform: 'scale(1.2)' }} />
       <img src="/cognify-mobile.png" alt="Cognify app screenshot"
-        className="relative w-full h-auto drop-shadow-2xl"
-        style={{ maxWidth: 300 }} />
+        className="relative w-full h-auto drop-shadow-2xl" />
     </div>
   )
 }
 
-// ── Floating stat cards ────────────────────────────────────────────────────
+// ── Floating stat cards (desktop only) ────────────────────────────────────
 function FloatingCards() {
   const isDark = useContext(ThemeCtx)
   const cardBg = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.85)'
@@ -181,49 +154,58 @@ function Nav({ onDownload, toggleTheme }) {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Close menu on resize to desktop
+  useEffect(() => {
+    const handleResize = () => { if (window.innerWidth >= 768) setMenuOpen(false) }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   const navBg = scrolled
-    ? (isDark ? 'rgba(26,13,61,0.92)' : 'rgba(255,255,255,0.95)')
+    ? (isDark ? 'rgba(26,13,61,0.95)' : 'rgba(255,255,255,0.97)')
     : 'transparent'
   const navBorder = scrolled
     ? (isDark ? '1px solid rgba(255,255,255,0.07)' : '1px solid rgba(124,58,237,0.1)')
     : 'none'
-  const textColor = isDark ? 'rgba(255,255,255,0.6)' : '#6B7280'
-  const textHoverColor = isDark ? 'white' : '#1A0D3D'
-  const logoTextColor = isDark ? 'white' : '#1A0D3D'
+  const linkColor = isDark ? 'rgba(255,255,255,0.6)' : '#6B7280'
+  const linkHover = isDark ? 'white' : '#1A0D3D'
+  const iconColor = isDark ? '#C4B5FD' : '#7C3AED'
+  const iconBg = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(124,58,237,0.1)'
+  const mobileTextColor = isDark ? 'rgba(255,255,255,0.8)' : '#374151'
+  const mobileBorderColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(124,58,237,0.08)'
+
+  const gradientText = {
+    background: 'linear-gradient(135deg, #7C3AED, #C084FC)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    backgroundClip: 'text',
+  }
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-      style={{ background: navBg, backdropFilter: scrolled ? 'blur(16px)' : 'none', borderBottom: navBorder }}>
-      <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      style={{ background: navBg, backdropFilter: scrolled ? 'blur(20px)' : 'none', borderBottom: navBorder }}>
+
+      {/* ── Desktop bar ── */}
+      <div className="hidden md:flex max-w-6xl mx-auto px-6 py-4 items-center justify-between">
         <div className="flex items-center gap-2.5">
           <img src="/cognify-logo.png" alt="Cognify" className="h-8 w-auto" />
-          <span className="font-bold text-lg tracking-tight"
-            style={{ fontFamily: 'Plus Jakarta Sans', background: 'linear-gradient(135deg, #7C3AED, #C084FC)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Cognify</span>
+          <span className="font-bold text-lg tracking-tight" style={{ fontFamily: 'Plus Jakarta Sans', ...gradientText }}>Cognify</span>
         </div>
 
-        <div className="hidden md:flex items-center gap-8">
-          {[['Features', '#features'], ['Inside', '#inside'], ['Download', '#download']].map(([label, href]) => (
-            <a key={href} href={href}
-              className="text-sm transition-colors"
-              style={{ color: textColor }}
-              onMouseEnter={e => e.target.style.color = textHoverColor}
-              onMouseLeave={e => e.target.style.color = textColor}>
-              {label}
-            </a>
+        <div className="flex items-center gap-8">
+          {[['Features', '#features'], ['Download', '#download']].map(([label, href]) => (
+            <a key={href} href={href} className="text-sm transition-colors" style={{ color: linkColor }}
+              onMouseEnter={e => e.target.style.color = linkHover}
+              onMouseLeave={e => e.target.style.color = linkColor}>{label}</a>
           ))}
         </div>
 
-        <div className="hidden md:flex items-center gap-3">
-          {/* Theme toggle */}
+        <div className="flex items-center gap-3">
           <button onClick={toggleTheme}
             className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:scale-110"
-            style={{
-              background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(124,58,237,0.1)',
-              color: isDark ? '#C4B5FD' : '#7C3AED',
-            }}>
+            style={{ background: iconBg, color: iconColor }}>
             <span className="w-4 h-4">{isDark ? <Icon.Sun /> : <Icon.Moon />}</span>
           </button>
-
           <button onClick={onDownload}
             className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all hover:scale-105"
             style={{ background: 'linear-gradient(135deg, #F0C060, #E8A830)', color: '#1A0D3D' }}>
@@ -231,37 +213,52 @@ function Nav({ onDownload, toggleTheme }) {
             Download APK
           </button>
         </div>
-
-        <div className="md:hidden flex items-center gap-2">
-          <button onClick={toggleTheme}
-            className="w-8 h-8 rounded-full flex items-center justify-center"
-            style={{ background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(124,58,237,0.1)', color: isDark ? '#C4B5FD' : '#7C3AED' }}>
-            <span className="w-4 h-4">{isDark ? <Icon.Sun /> : <Icon.Moon />}</span>
-          </button>
-          <button onClick={() => setMenuOpen(!menuOpen)}
-            className="w-6 h-6 transition-colors"
-            style={{ color: isDark ? 'white' : '#1A0D3D' }}>
-            {menuOpen ? <Icon.X /> : <Icon.Menu />}
-          </button>
-        </div>
       </div>
 
+      {/* ── Mobile bar: hamburger | logo (center) | spacer ── */}
+      <div className="md:hidden relative flex items-center justify-between px-4 py-3.5">
+        {/* Left: hamburger */}
+        <button onClick={() => setMenuOpen(!menuOpen)}
+          className="w-10 h-10 rounded-xl flex items-center justify-center transition-all active:scale-95"
+          style={{ background: menuOpen ? iconBg : 'transparent', color: isDark ? 'white' : '#1A0D3D' }}>
+          <span className="w-5 h-5">{menuOpen ? <Icon.X /> : <Icon.Menu />}</span>
+        </button>
+
+        {/* Center: logo (absolute so it's truly centered) */}
+        <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 pointer-events-none">
+          <img src="/cognify-logo.png" alt="Cognify" className="h-7 w-auto" />
+          <span className="font-bold text-base tracking-tight" style={{ fontFamily: 'Plus Jakarta Sans', ...gradientText }}>Cognify</span>
+        </div>
+
+        {/* Right: spacer to balance layout */}
+        <div className="w-10 h-10" />
+      </div>
+
+      {/* ── Mobile dropdown menu ── */}
       {menuOpen && (
-        <div className="md:hidden px-6 pb-6 space-y-4"
+        <div className="md:hidden"
           style={{
-            background: isDark ? 'rgba(26,13,61,0.98)' : 'rgba(255,255,255,0.98)',
-            borderBottom: isDark ? '1px solid rgba(255,255,255,0.07)' : '1px solid rgba(124,58,237,0.1)',
+            background: isDark ? 'rgba(15,7,35,0.98)' : 'rgba(255,255,255,0.99)',
+            backdropFilter: 'blur(20px)',
+            borderBottom: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(124,58,237,0.1)'}`,
           }}>
-          {[['Features', '#features'], ['Inside', '#inside'], ['Download', '#download']].map(([label, href]) => (
-            <a key={href} href={href} onClick={() => setMenuOpen(false)}
-              className="block text-base py-1 transition-colors"
-              style={{ color: isDark ? 'rgba(255,255,255,0.7)' : '#6B7280' }}>{label}</a>
-          ))}
-          <button onClick={() => { onDownload(); setMenuOpen(false) }}
-            className="w-full py-3 rounded-full font-semibold text-sm"
-            style={{ background: 'linear-gradient(135deg, #F0C060, #E8A830)', color: '#1A0D3D' }}>
-            Download APK
-          </button>
+          <div className="px-4 pt-2 pb-6 space-y-1">
+            {[['Features', '#features'], ['Download', '#download']].map(([label, href]) => (
+              <a key={href} href={href} onClick={() => setMenuOpen(false)}
+                className="flex items-center py-3.5 px-3 rounded-xl text-base font-medium transition-colors"
+                style={{ color: mobileTextColor, borderBottom: `1px solid ${mobileBorderColor}` }}>
+                {label}
+              </a>
+            ))}
+              {/* Theme toggle row */}
+            <button onClick={toggleTheme}
+              className="flex items-center justify-between w-full py-3.5 px-3 rounded-xl text-base font-medium transition-colors"
+              style={{ color: mobileTextColor, borderBottom: `1px solid ${mobileBorderColor}` }}>
+              <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
+              <span className="w-5 h-5" style={{ color: iconColor }}>{isDark ? <Icon.Sun /> : <Icon.Moon />}</span>
+            </button>
+
+          </div>
         </div>
       )}
     </nav>
@@ -295,51 +292,57 @@ function Hero({ onDownload, config, apkSize }) {
       <div className="absolute bottom-1/4 right-1/3 w-64 h-64 rounded-full blur-3xl pointer-events-none"
         style={{ background: '#C084FC', opacity: t(0.06, 0.15) }} />
 
-      <div className="max-w-6xl mx-auto px-6 pt-24 pb-16 grid lg:grid-cols-2 gap-12 items-center w-full">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8"
-            style={{
-              background: t('rgba(124,58,237,0.08)', 'rgba(124,58,237,0.2)'),
-              border: `1px solid ${t('rgba(124,58,237,0.25)', 'rgba(124,58,237,0.4)')}`,
-            }}>
-            <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-xs font-semibold tracking-wide uppercase"
-              style={{ color: t('#7C3AED', '#C4B5FD') }}>Now available on Android</span>
-          </div>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-24 pb-12 sm:pb-16 w-full">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+          {/* Copy */}
+          <div className="text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 sm:mb-8"
+              style={{
+                background: t('rgba(124,58,237,0.08)', 'rgba(124,58,237,0.2)'),
+                border: `1px solid ${t('rgba(124,58,237,0.25)', 'rgba(124,58,237,0.4)')}`,
+              }}>
+              <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-xs font-semibold tracking-wide uppercase"
+                style={{ color: t('#7C3AED', '#C4B5FD') }}>Now available on Android</span>
+            </div>
 
-          <h1 className="font-black leading-[1.05] tracking-tight text-balance"
-            style={{ fontFamily: 'Plus Jakarta Sans', fontSize: 'clamp(2.4rem, 5.5vw, 4rem)', color: t('#1A0D3D', 'white') }}>
-            The board exam doesn't scare
-            <span className="block italic" style={{ color: t('#7C3AED', '#C4B5FD') }}> the prepared.</span>
-          </h1>
+            <h1 className="font-black leading-[1.05] tracking-tight text-balance"
+              style={{ fontFamily: 'Plus Jakarta Sans', fontSize: 'clamp(2rem, 6vw, 4rem)', color: t('#1A0D3D', 'white') }}>
+              The board exam doesn't scare
+              <span className="block italic" style={{ color: t('#7C3AED', '#C4B5FD') }}> the prepared.</span>
+            </h1>
 
-          <p className="mt-6 text-lg leading-relaxed max-w-lg"
-            style={{ color: t('rgba(26,13,61,0.65)', 'rgba(255,255,255,0.65)') }}>
-            Cognify is your guided review system for the{' '}
-            <strong style={{ color: t('#1A0D3D', 'white') }}>Psychometrician Licensure Exam</strong>{' '}
-            — built to base on the official PRC Table of Specifications, so you always know what to study and how ready you actually are.
-          </p>
+            <p className="mt-5 sm:mt-6 text-base sm:text-lg leading-relaxed max-w-lg mx-auto lg:mx-0"
+              style={{ color: t('rgba(26,13,61,0.65)', 'rgba(255,255,255,0.65)') }}>
+              Cognify is your guided review system for the{' '}
+              <strong style={{ color: t('#1A0D3D', 'white') }}>Psychometrician Licensure Exam</strong>{' '}
+              — built to base on the official PRC Table of Specifications, so you always know what to study and how ready you actually are.
+            </p>
 
-          <div className="mt-10 flex flex-wrap gap-4 items-center">
-            <button onClick={onDownload}
-              className="relative group flex items-center gap-3 px-7 py-4 rounded-2xl font-bold text-base transition-all hover:scale-105 hover:shadow-2xl btn-ring"
-              style={{ background: 'linear-gradient(135deg, #F0C060, #E8A830)', color: '#1A0D3D', boxShadow: '0 8px 32px rgba(240,192,96,0.35)' }}>
-              <span className="w-5 h-5"><Icon.Download /></span>
-              Download Free — Android APK
-            </button>
+            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 items-center lg:items-start">
+              <button onClick={onDownload}
+                className="w-full sm:w-auto relative flex items-center justify-center gap-3 px-7 py-4 rounded-2xl font-bold text-base transition-all hover:scale-105 active:scale-95 hover:shadow-2xl btn-ring"
+                style={{ background: 'linear-gradient(135deg, #F0C060, #E8A830)', color: '#1A0D3D', boxShadow: '0 8px 32px rgba(240,192,96,0.35)' }}>
+                <span className="w-5 h-5"><Icon.Download /></span>
+                Download Free — Android APK
+              </button>
 
-            <div className="flex items-center gap-2 text-sm" style={{ color: t('rgba(26,13,61,0.5)', 'rgba(255,255,255,0.5)') }}>
-              <span className="w-5 h-5 text-green-500"><Icon.Android /></span>
-              {apkSize && <span>{apkSize}</span>}
-              {apkSize && <span>·</span>}
-              <span>Android {config?.minAndroid ?? '8.0'}+</span>
+              <div className="flex items-center gap-2 text-sm" style={{ color: t('rgba(26,13,61,0.5)', 'rgba(255,255,255,0.5)') }}>
+                <span className="w-5 h-5 text-green-500"><Icon.Android /></span>
+                {apkSize && <span>{apkSize}</span>}
+                {apkSize && <span>·</span>}
+                <span>Android {config?.minAndroid ?? '8.0'}+</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="relative flex justify-center lg:justify-end">
-          <PhoneMockup />
-          <FloatingCards />
+          {/* Phone mockup */}
+          <div className="relative flex justify-center lg:justify-end mt-8 lg:mt-0">
+            <div className="w-full max-w-[240px] sm:max-w-[280px] lg:max-w-[300px] relative">
+              <PhoneMockup />
+              <FloatingCards />
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -348,40 +351,49 @@ function Hero({ onDownload, config, apkSize }) {
 
 // ── Problem section ────────────────────────────────────────────────────────
 function ProblemSection() {
+  const isDark = useContext(ThemeCtx)
+  const t = (light, dark) => isDark ? dark : light
   const [ref, visible] = useReveal()
 
   return (
-    <section ref={ref} className="py-24 px-6" style={{ background: '#FAFAF8' }}>
+    <section ref={ref} className="py-16 sm:py-24 px-4 sm:px-6"
+      style={{ background: t('#FAFAF8', '#0F0723') }}>
       <div className="max-w-5xl mx-auto">
         <div className={`section-reveal ${visible ? 'visible' : ''}`}>
-          <p className="text-sm font-semibold uppercase tracking-widest mb-6" style={{ color: '#7C3AED' }}>The reality</p>
-          <h2 className="font-black leading-tight text-balance mb-6"
-            style={{ fontFamily: 'Plus Jakarta Sans', fontSize: 'clamp(2rem, 4.5vw, 3.5rem)', color: '#1A0D3D' }}>
+          <p className="text-sm font-semibold uppercase tracking-widest mb-4 sm:mb-6"
+            style={{ color: t('#7C3AED', '#C4B5FD') }}>The reality</p>
+          <h2 className="font-black leading-tight text-balance mb-4"
+            style={{ fontFamily: 'Plus Jakarta Sans', fontSize: 'clamp(1.8rem, 4.5vw, 3.5rem)', color: t('#1A0D3D', 'white') }}>
             You're studying hard.
             <br />
-            <span className="italic" style={{ color: '#7C3AED' }}>But are you studying the right things?</span>
+            <span className="italic" style={{ color: t('#7C3AED', '#C4B5FD') }}>But are you studying the right things?</span>
           </h2>
         </div>
 
-        <div className="mt-16 grid md:grid-cols-3 gap-6">
+        <div className="mt-10 sm:mt-16 grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
           {[
             { num: '01', title: 'No structure', body: "Scattered notes, random review sessions, and no way to know if you're actually making progress.", delay: 'stagger-1' },
             { num: '02', title: 'No feedback loop', body: 'You practice questions but never know which topics you consistently miss — until the exam.', delay: 'stagger-2' },
             { num: '03', title: 'Pure anxiety', body: "Weeks before the board exam, you don't know what you don't know. That's the worst place to be.", delay: 'stagger-3' },
           ].map(({ num, title, body, delay }) => (
             <div key={num}
-              className={`section-reveal ${delay} ${visible ? 'visible' : ''} card-hover rounded-2xl p-6`}
-              style={{ border: '1.5px solid #EDE9FE', background: 'white' }}>
-              <div className="text-5xl font-black mb-4 leading-none" style={{ color: '#EDE9FE', fontFamily: 'Plus Jakarta Sans' }}>{num}</div>
-              <h3 className="text-lg font-bold mb-2" style={{ fontFamily: 'Plus Jakarta Sans', color: '#1A0D3D' }}>{title}</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">{body}</p>
+              className={`section-reveal ${delay} ${visible ? 'visible' : ''} card-hover rounded-2xl p-5 sm:p-6`}
+              style={{
+                background: t('white', 'rgba(45,27,105,0.3)'),
+                border: `1.5px solid ${t('#EDE9FE', 'rgba(124,58,237,0.2)')}`,
+              }}>
+              <div className="text-4xl sm:text-5xl font-black mb-3 sm:mb-4 leading-none"
+                style={{ color: t('#EDE9FE', 'rgba(124,58,237,0.3)'), fontFamily: 'Plus Jakarta Sans' }}>{num}</div>
+              <h3 className="text-base sm:text-lg font-bold mb-2"
+                style={{ fontFamily: 'Plus Jakarta Sans', color: t('#1A0D3D', 'white') }}>{title}</h3>
+              <p className="text-sm leading-relaxed" style={{ color: t('#6B7280', 'rgba(255,255,255,0.55)') }}>{body}</p>
             </div>
           ))}
         </div>
 
-        <div className={`section-reveal stagger-4 ${visible ? 'visible' : ''} mt-16 rounded-3xl p-8 text-center`}
+        <div className={`section-reveal stagger-4 ${visible ? 'visible' : ''} mt-10 sm:mt-16 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-center`}
           style={{ background: 'linear-gradient(135deg, #1A0D3D, #2D1B69)', color: 'white' }}>
-          <p className="font-black text-2xl md:text-3xl" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+          <p className="font-black text-xl sm:text-2xl md:text-3xl" style={{ fontFamily: 'Plus Jakarta Sans' }}>
             There's a better way to prepare. <span style={{ color: '#F0C060' }}>There's Cognify.</span>
           </p>
         </div>
@@ -395,9 +407,20 @@ function FeaturesSection() {
   const isDark = useContext(ThemeCtx)
   const [ref, visible] = useReveal()
 
+  const t = (light, dark) => isDark ? dark : light
+
+  // Purple-gradient cards (non-light): brighter in light, deeper in dark
   const darkCardBg = isDark
     ? 'linear-gradient(135deg, #2D1B69, #4C1D95)'
     : 'linear-gradient(135deg, #7C3AED, #9333EA)'
+
+  // "light" cards: white in light mode, dark purple tint in dark mode
+  const lightCardBg = t('white', 'rgba(45,27,105,0.3)')
+  const lightCardBorder = t('1.5px solid #EDE9FE', '1.5px solid rgba(124,58,237,0.2)')
+  const lightCardTitle = t('#1A0D3D', 'white')
+  const lightCardBody = t('#6B7280', 'rgba(255,255,255,0.6)')
+  const lightCardIconBg = t('#EDE9FE', 'rgba(255,255,255,0.1)')
+  const lightCardIconColor = t('#7C3AED', '#C4B5FD')
 
   const features = [
     { icon: <Icon.Brain />, title: 'Personalized Learning', body: 'Self-paced review recommendations based on your performance and learning gaps — no more guessing what to study next.', wide: true, light: false },
@@ -406,104 +429,104 @@ function FeaturesSection() {
     { icon: <Icon.ClipboardCheck />, title: 'PRC TOS Alignment', body: 'Review topics and materials are aligned with the official PRC Table of Specifications — so your preparation stays focused on what actually matters.', wide: true, light: true },
   ]
 
+  const cardClass = (f, i, rowIndex) => {
+    const base = `section-reveal stagger-${i + 1 + rowIndex * 2} ${visible ? 'visible' : ''} card-hover rounded-2xl sm:rounded-3xl p-5 sm:p-7`
+    if (rowIndex === 0) return `${base} ${i === 0 ? 'md:col-span-2' : 'md:col-span-1'}`
+    return `${base} ${i === 1 ? 'md:col-span-2' : 'md:col-span-1'}`
+  }
+
+  const renderCard = (f, i, rowIndex) => (
+    <div key={f.title} className={cardClass(f, i, rowIndex)}
+      style={{ background: f.light ? lightCardBg : darkCardBg, border: f.light ? lightCardBorder : 'none' }}>
+      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-5"
+        style={{ background: f.light ? lightCardIconBg : 'rgba(255,255,255,0.15)', color: f.light ? lightCardIconColor : '#C4B5FD' }}>
+        <div className="w-5 h-5 sm:w-6 sm:h-6">{f.icon}</div>
+      </div>
+      <h3 className="font-bold text-base sm:text-lg mb-1.5 sm:mb-2"
+        style={{ fontFamily: 'Plus Jakarta Sans', color: f.light ? lightCardTitle : 'white' }}>{f.title}</h3>
+      <p className="text-sm leading-relaxed"
+        style={{ color: f.light ? lightCardBody : 'rgba(255,255,255,0.75)' }}>{f.body}</p>
+    </div>
+  )
+
   return (
-    <section id="features" ref={ref} className="py-24 px-6" style={{ background: '#FAFAF8' }}>
+    <section id="features" ref={ref} className="py-16 sm:py-24 px-4 sm:px-6"
+      style={{ background: t('#FAFAF8', '#0F0723') }}>
       <div className="max-w-5xl mx-auto">
-        <div className={`section-reveal ${visible ? 'visible' : ''} text-center mb-14`}>
-          <p className="text-sm font-semibold uppercase tracking-widest mb-4" style={{ color: '#7C3AED' }}>Key Features</p>
+        <div className={`section-reveal ${visible ? 'visible' : ''} text-center mb-10 sm:mb-14`}>
+          <p className="text-sm font-semibold uppercase tracking-widest mb-3 sm:mb-4"
+            style={{ color: t('#7C3AED', '#C4B5FD') }}>Key Features</p>
           <h2 className="font-black leading-tight"
-            style={{ fontFamily: 'Plus Jakarta Sans', fontSize: 'clamp(2rem, 4vw, 3rem)', color: '#1A0D3D' }}>
-            Here's how <span style={{ background: 'linear-gradient(135deg, #7C3AED, #C084FC)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Cognify</span> helps.
+            style={{ fontFamily: 'Plus Jakarta Sans', fontSize: 'clamp(1.8rem, 4vw, 3rem)', color: t('#1A0D3D', 'white') }}>
+            Here's how{' '}
+            <span style={{ background: 'linear-gradient(135deg, #7C3AED, #C084FC)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Cognify</span>
+            {' '}helps.
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 auto-rows-auto">
-          {[features[0], features[1]].map((f, i) => (
-            <div key={f.title}
-              className={`section-reveal stagger-${i + 1} ${visible ? 'visible' : ''} card-hover rounded-3xl p-7 ${i === 0 ? 'md:col-span-2' : 'md:col-span-1'}`}
-              style={{ background: f.light ? 'white' : darkCardBg, border: f.light ? '1.5px solid #EDE9FE' : 'none' }}>
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5"
-                style={{ background: f.light ? '#EDE9FE' : 'rgba(255,255,255,0.15)', color: f.light ? '#7C3AED' : '#C4B5FD' }}>
-                <div className="w-6 h-6">{f.icon}</div>
-              </div>
-              <h3 className="font-bold text-lg mb-2" style={{ fontFamily: 'Plus Jakarta Sans', color: f.light ? '#1A0D3D' : 'white' }}>{f.title}</h3>
-              <p className="text-sm leading-relaxed" style={{ color: f.light ? '#6B7280' : 'rgba(255,255,255,0.75)' }}>{f.body}</p>
-            </div>
-          ))}
-
-          {[features[2], features[3]].map((f, i) => (
-            <div key={f.title}
-              className={`section-reveal stagger-${i + 3} ${visible ? 'visible' : ''} card-hover rounded-3xl p-7 ${i === 1 ? 'md:col-span-2' : 'md:col-span-1'}`}
-              style={{ background: f.light ? 'white' : darkCardBg, border: f.light ? '1.5px solid #EDE9FE' : 'none' }}>
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5"
-                style={{ background: f.light ? '#EDE9FE' : 'rgba(255,255,255,0.15)', color: f.light ? '#7C3AED' : '#C4B5FD' }}>
-                <div className="w-6 h-6">{f.icon}</div>
-              </div>
-              <h3 className="font-bold text-lg mb-2" style={{ fontFamily: 'Plus Jakarta Sans', color: f.light ? '#1A0D3D' : 'white' }}>{f.title}</h3>
-              <p className="text-sm leading-relaxed" style={{ color: f.light ? '#6B7280' : 'rgba(255,255,255,0.75)' }}>{f.body}</p>
-            </div>
-          ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
+          {[features[0], features[1]].map((f, i) => renderCard(f, i, 0))}
+          {[features[2], features[3]].map((f, i) => renderCard(f, i, 1))}
         </div>
       </div>
     </section>
   )
 }
 
-
-// ── Download section (always dark for visual punch) ────────────────────────
+// ── Download section ───────────────────────────────────────────────────────
 function DownloadSection({ config, onDownload }) {
   const [ref, visible] = useReveal()
 
   return (
-    <section id="download" ref={ref} className="py-24 px-6 relative overflow-hidden"
+    <section id="download" ref={ref} className="py-16 sm:py-24 px-4 sm:px-6 relative overflow-hidden"
       style={{ background: 'linear-gradient(150deg, #2D1B69 0%, #1A0D3D 60%, #0F0723 100%)' }}>
 
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-96 h-96 rounded-full blur-3xl opacity-30" style={{ background: '#7C3AED' }} />
+        <div className="w-64 sm:w-96 h-64 sm:h-96 rounded-full blur-3xl opacity-30" style={{ background: '#7C3AED' }} />
       </div>
 
       <div className="max-w-3xl mx-auto text-center relative">
         <div className={`section-reveal ${visible ? 'visible' : ''}`}>
-          <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8"
+          <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 sm:mb-8"
             style={{ background: 'rgba(240,192,96,0.15)', border: '1px solid rgba(240,192,96,0.3)' }}>
             <span className="w-4 h-4 text-yellow-300"><Icon.Android /></span>
             <span className="text-yellow-300 text-xs font-semibold tracking-wide uppercase">Available on Android</span>
           </div>
 
           <h2 className="font-black leading-tight text-balance"
-            style={{ fontFamily: 'Plus Jakarta Sans', fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', color: 'white' }}>
+            style={{ fontFamily: 'Plus Jakarta Sans', fontSize: 'clamp(1.9rem, 5vw, 3.5rem)', color: 'white' }}>
             Ready to prepare<br />
             <span style={{ color: '#F0C060' }}>the right way?</span>
           </h2>
 
-          <p className="mt-6 text-white/60 text-lg leading-relaxed max-w-lg mx-auto">
+          <p className="mt-5 sm:mt-6 text-white/60 text-base sm:text-lg leading-relaxed max-w-lg mx-auto">
             Download Cognify for free. Enable unknown sources on your Android device, install the APK, and start your first review session in minutes.
           </p>
 
           <button onClick={onDownload}
-            className="relative group mt-10 inline-flex items-center gap-3 px-10 py-5 rounded-2xl font-bold text-lg transition-all hover:scale-105"
+            className="mt-8 sm:mt-10 w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-bold text-base sm:text-lg transition-all hover:scale-105 active:scale-95"
             style={{ background: 'linear-gradient(135deg, #F0C060, #E8A830)', color: '#1A0D3D', boxShadow: '0 12px 48px rgba(240,192,96,0.4)' }}>
-            <span className="w-6 h-6"><Icon.Download /></span>
+            <span className="w-5 h-5 sm:w-6 sm:h-6"><Icon.Download /></span>
             Download Cognify APK — Free
           </button>
 
           {config && (
-            <div className="mt-6 flex items-center justify-center gap-4 flex-wrap">
+            <div className="mt-4 sm:mt-6 flex items-center justify-center gap-3 sm:gap-4 flex-wrap">
               <span className="text-white/40 text-sm">Version {config.version}</span>
               <span className="text-white/20 text-sm">·</span>
               <span className="text-white/40 text-sm">Android {config.minAndroid}+</span>
             </div>
           )}
 
-          <div className="mt-12 rounded-2xl p-6 text-left max-w-md mx-auto"
+          <div className="mt-10 sm:mt-12 rounded-2xl p-5 sm:p-6 text-left max-w-md mx-auto"
             style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
             <p className="text-white/70 text-sm font-semibold mb-3">Quick install guide</p>
-            <div className="space-y-2">
+            <div className="space-y-2.5 sm:space-y-2">
               {[
                 'Tap "Download Cognify APK" above',
                 'Open the downloaded file from your notifications',
                 'Allow "Install unknown apps" when prompted',
-                'Install and launch Cognify — you\'re in.',
+                "Install and launch Cognify — you're in.",
               ].map((step, i) => (
                 <div key={i} className="flex gap-3 items-start">
                   <span className="flex-shrink-0 w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center mt-0.5"
@@ -525,23 +548,22 @@ function Footer() {
   const t = (light, dark) => isDark ? dark : light
 
   return (
-    <footer className="px-6 py-10"
+    <footer className="px-4 sm:px-6 py-8 sm:py-10"
       style={{
         background: t('#F0ECFF', '#0F0723'),
         borderTop: `1px solid ${t('rgba(124,58,237,0.1)', 'rgba(255,255,255,0.06)')}`,
       }}>
-      <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 text-center sm:text-left">
         <div className="flex items-center gap-2.5">
           <img src="/cognify-logo.png" alt="Cognify" className="h-7 w-auto" style={{ opacity: t(1, 0.8) }} />
           <span className="font-bold tracking-tight" style={{ fontFamily: 'Plus Jakarta Sans', background: 'linear-gradient(135deg, #7C3AED, #C084FC)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Cognify</span>
         </div>
 
-        <p className="text-sm text-center" style={{ color: t('#6B7280', 'rgba(255,255,255,0.3)') }}>
+        <p className="text-xs sm:text-sm" style={{ color: t('#6B7280', 'rgba(255,255,255,0.3)') }}>
           A guided learning and support system for Licensure Exam Readiness in Psychology.
-          <br className="hidden md:block" />
+          <br />
           Developed for CvSU-B · Department of Arts and Sciences
         </p>
-
       </div>
     </footer>
   )
@@ -580,12 +602,10 @@ export default function App() {
     }
   }, [config])
 
-  const toggleTheme = () => setIsDark(d => !d)
-
   return (
     <ThemeCtx.Provider value={isDark}>
       <div className="grain">
-        <Nav onDownload={handleDownload} toggleTheme={toggleTheme} />
+        <Nav onDownload={handleDownload} toggleTheme={() => setIsDark(d => !d)} />
         <Hero onDownload={handleDownload} config={config} apkSize={apkSize} />
         <ProblemSection />
         <FeaturesSection />
