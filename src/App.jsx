@@ -164,9 +164,7 @@ function Nav({ onDownload, toggleTheme }) {
   const navBg = scrolled
     ? (isDark ? 'rgba(26,13,61,0.95)' : 'rgba(255,255,255,0.97)')
     : 'transparent'
-  const navBorder = scrolled
-    ? (isDark ? '1px solid rgba(255,255,255,0.07)' : '1px solid rgba(124,58,237,0.1)')
-    : 'none'
+  const navBorder = 'none'
   const linkColor = isDark ? 'rgba(255,255,255,0.6)' : '#6B7280'
   const linkHover = isDark ? 'white' : '#1A0D3D'
   const iconColor = isDark ? '#C4B5FD' : '#7C3AED'
